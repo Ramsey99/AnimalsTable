@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animal Table</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    img {
+      width: 80px;
+      height: auto;
+      border: 2px solid black;
+    }
+    .bold {
+      font-weight: bold;
+    }
+    .bold-italic-blue {
+      font-weight: bold;
+      font-style: italic;
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h1>Animal Tables</h1>
+    <div id="bigCatsContainer">
+      <h3>Big Cats</h3>
+      <button class="btn btn-primary mb-2" onclick="addAnimal(bigCats, 'bigCatsTable')">Add Animal</button>
+      <table id="bigCatsTable" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Species</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="dogsContainer" class="mt-4">
+      <h3>Dogs</h3>
+      <button class="btn btn-primary mb-2" onclick="addAnimal(dogs, 'dogsTable')">Add Animal</button>
+      <table id="dogsTable" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Species</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="bigFishContainer" class="mt-4">
+      <h3>Big Fish</h3>
+      <button class="btn btn-primary mb-2" onclick="addAnimal(bigFish, 'bigFishTable')">Add Animal</button>
+      <table id="bigFishTable" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Species</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

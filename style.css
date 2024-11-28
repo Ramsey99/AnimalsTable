@@ -1,0 +1,23 @@
+/* Style for table images */
+img {
+    width: 100px;
+    height: auto;
+    border: 2px solid #ccc;
+    transition: transform 0.3s ease;
+  }
+  
+  img:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Style for highlighting text in Dogs and Big Fish tables */
+  .bold {
+    font-weight: bold;
+  }
+  
+  .bold-italic-blue {
+    font-weight: bold;
+    font-style: italic;
+    color: blue;
+  }
+  
