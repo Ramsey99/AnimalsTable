@@ -1,4 +1,4 @@
-/* Style for table images */
+
 img {
     width: 100px;
     height: auto;
@@ -10,7 +10,6 @@ img {
     transform: scale(1.2);
   }
   
-  /* Style for highlighting text in Dogs and Big Fish tables */
   .bold {
     font-weight: bold;
   }

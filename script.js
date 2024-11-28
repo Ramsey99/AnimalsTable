@@ -1,91 +1,130 @@
-// Sample data for Big Cats, Dogs, and Big Fish
+
 const bigCats = [
-    { species: "Big Cats", name: "Tiger", size: "10 ft", location: "Asia", img: "https://via.placeholder.com/100" },
-    { species: "Big Cats", name: "Lion", size: "8 ft", location: "Africa", img: "https://via.placeholder.com/100" },
-    { species: "Big Cats", name: "Jaguar", size: "7 ft", location: "South America", img: "https://via.placeholder.com/100" },
+    { species: "Big Cats", name: "Tiger", size: "10 ft", location: "Asia", img: "./image/tiger1.png" },
+    { species: "Big Cats", name: "Lion", size: "8 ft", location: "Africa", img: "./image/lion.png" },
+    { species: "Big Cats", name: "Leopard", size: "5 ft", location: "Africa and Asia", img: "./image/leopard.png" },
+    { species: "Big Cats", name: "Cheetah", size: "5 ft", location: "Africa", img: "./image/cheetah.png" },
+    { species: "Big Cats", name: "Caracal", size: "3 ft", location: "Africa", img: "./image/caracal.png" },
+    { species: "Big Cats", name: "Jaguar", size: "7 ft", location: "South America", img: "./image/jagaur.png" },
   ];
   
   const dogs = [
-    { species: "Dog", name: "Rottweiler", size: "2 ft", location: "Germany", img: "https://via.placeholder.com/100" },
-    { species: "Dog", name: "Golden Retriever", size: "2.5 ft", location: "UK", img: "https://via.placeholder.com/100" },
-    { species: "Dog", name: "German Shepherd", size: "3 ft", location: "Germany", img: "https://via.placeholder.com/100" },
+    { species: "Dog", name: "Rottweiler", size: "2 ft", location: "Germany", img: "./image/rotwailer.png" },
+    { species: "Dog", name: "Labrodar", size: "2 ft", location: "UK", img: "./image/labradar.png" },
+    { species: "Dog", name: "German Shepherd", size: "2 ft", location: "Germany", img: "./image/german.png" },
+    { species: "Dog", name: "Alabai", size: "4 ft", location: "Turkey", img: "./image/alabai.png" },
   ];
   
   const bigFish = [
-    { species: "Big Fish", name: "Humpback Whale", size: "15 ft", location: "Atlantic Ocean", img: "https://via.placeholder.com/100" },
-    { species: "Big Fish", name: "Great White Shark", size: "20 ft", location: "Pacific Ocean", img: "https://via.placeholder.com/100" },
-    { species: "Big Fish", name: "Blue Whale", size: "30 ft", location: "Indian Ocean", img: "https://via.placeholder.com/100" },
+    { species: "Big Fish", name: "Humpback Whale", size: "15 ft", location: "Atlantic Ocean", img: "./image/humpback.png" },
+    { species: "Big Fish", name: "Killer Whale", size: "12 ft", location: "Atlantic Ocean", img: "./image/killer.png" },
+    { species: "Big Fish", name: "Tiger Shark", size: "8 ft", location: "Ocean", img: "./image/tiger_shark.png" },
+    { species: "Big Fish", name: "Hammerhead Shark", size: "8 ft", location: "Ocean", img: "./image/hammerhead.png" },
   ];
-  
-  // Function to render a table dynamically
-  function renderTable(data, tableId, styles = {}) {
+
+function renderTable(data, tableId, styles = {}) {
     const tableBody = document.querySelector(`#${tableId} tbody`);
-    tableBody.innerHTML = ""; // Clear existing rows
+    tableBody.innerHTML = "";
+  
     data.forEach((animal, index) => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${animal.species}</td>
-        <td class="${styles.nameClass || ''}">${animal.name}</td>
-        <td>${animal.size}</td>
-        <td>${animal.location}</td>
+        <td contenteditable="true" class="${styles.nameClass || ''}" data-field="name">${animal.name}</td>
+        <td contenteditable="true" data-field="size">${animal.size}</td>
+        <td contenteditable="true" data-field="location">${animal.location}</td>
         <td>
-          <img src="${animal.img}" alt="${animal.name}" />
+          <img src="${animal.img}" alt="${animal.name}" class="editable-image" data-field="img" />
         </td>
         <td>
-          <button class="btn btn-warning btn-sm" onclick="editAnimal(${index}, '${tableId}', '${data}')">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteAnimal(${index}, '${tableId}', '${data}')">Delete</button>
+          <button class="btn btn-warning btn-sm" onclick="saveChanges(${index}, '${tableId}')">Save</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAnimal(${index}, '${tableId}')">Delete</button>
         </td>
       `;
       tableBody.appendChild(row);
     });
+  
+    const addRow = document.createElement("tr");
+    addRow.innerHTML = `
+      <td>New</td>
+      <td contenteditable="true" data-field="name" placeholder="Enter name"></td>
+      <td contenteditable="true" data-field="size" placeholder="Enter size"></td>
+      <td contenteditable="true" data-field="location" placeholder="Enter location"></td>
+      <td><input type="file" onchange="previewImage(event, '${tableId}')" /></td>
+      <td>
+        <button class="btn btn-success btn-sm" onclick="saveNewAnimal('${tableId}')">Add</button>
+      </td>
+    `;
+    tableBody.appendChild(addRow);
   }
   
-  // Function to sort data
-  function sortTable(data, key, tableId) {
-    data.sort((a, b) => a[key].localeCompare(b[key]));
-    renderTable(data, tableId);
-  }
-  
-  // Function to add a new animal
-  function addAnimal(data, tableId) {
-    const species = prompt("Enter species:");
-    const name = prompt("Enter name:");
-    const size = prompt("Enter size (e.g., '10 ft'):");
-    const location = prompt("Enter location:");
-    const img = prompt("Enter image URL:", "https://via.placeholder.com/100");
-    if (species && name && size && location && img) {
-      data.push({ species, name, size, location, img });
-      renderTable(data, tableId);
-    } else {
-      alert("All fields are required.");
+  function previewImage(event, tableId) {
+    const input = event.target;
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imgPreview = input.closest("tr").querySelector("img");
+        if (!imgPreview) {
+          const imgElement = document.createElement("img");
+          imgElement.src = e.target.result;
+          imgElement.alt = "Preview";
+          imgElement.classList.add("editable-image");
+          input.closest("td").appendChild(imgElement);
+        } else {
+          imgPreview.src = e.target.result;
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
   
-  // Function to edit an animal
-  function editAnimal(index, tableId, data) {
-    const animal = data[index];
-    const newName = prompt("Edit name:", animal.name);
-    const newSize = prompt("Edit size:", animal.size);
-    const newLocation = prompt("Edit location:", animal.location);
-    const newImg = prompt("Edit image URL:", animal.img);
-    if (newName && newSize && newLocation && newImg) {
-      data[index] = { ...animal, name: newName, size: newSize, location: newLocation, img: newImg };
-      renderTable(data, tableId);
+  function saveNewAnimal(tableId) {
+    const tableBody = document.querySelector(`#${tableId} tbody`);
+    const lastRow = tableBody.querySelector("tr:last-child");
+  
+    const fields = lastRow.querySelectorAll('[contenteditable="true"]');
+    const imgField = lastRow.querySelector("img");
+  
+    const species = "Unknown";  
+    const name = fields[0].innerText.trim();
+    const size = fields[1].innerText.trim();
+    const location = fields[2].innerText.trim();
+    const img = imgField ? imgField.src : "./image/placeholder.png";
+  
+    if (name && size && location) {
+      const newAnimal = { species, name, size, location, img };
+      const data = getDataByTableId(tableId);
+      data.push(newAnimal);
+  
+      renderTable(data, tableId, getStylesByTableId(tableId));
     } else {
-      alert("All fields are required.");
+      alert("Please fill in all fields.");
     }
   }
-  
-  // Function to delete an animal
-  function deleteAnimal(index, tableId, data) {
+
+  function deleteAnimal(index, tableId) {
+    const data = getDataByTableId(tableId); 
     if (confirm("Are you sure you want to delete this animal?")) {
-      data.splice(index, 1);
-      renderTable(data, tableId);
+      data.splice(index, 1); 
+      renderTable(data, tableId, getStylesByTableId(tableId));
     }
   }
   
-  // Initial rendering of tables
+  function getDataByTableId(tableId) {
+    if (tableId === "bigCatsTable") return bigCats;
+    if (tableId === "dogsTable") return dogs;
+    if (tableId === "bigFishTable") return bigFish;
+    return [];
+  }
+  
+  function getStylesByTableId(tableId) {
+    if (tableId === "dogsTable") return { nameClass: "bold" };
+    if (tableId === "bigFishTable") return { nameClass: "bold-italic-blue" };
+    return {}; 
+  }
+  
   renderTable(bigCats, "bigCatsTable");
-  renderTable(dogs, "dogsTable", { nameClass: "bold" });
-  renderTable(bigFish, "bigFishTable", { nameClass: "bold-italic-blue" });
+  renderTable(dogs, "dogsTable", getStylesByTableId("dogsTable"));
+  renderTable(bigFish, "bigFishTable", getStylesByTableId("bigFishTable"));
   
